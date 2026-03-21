@@ -3,11 +3,10 @@ import {
 	serializerCompiler,
 	validatorCompiler,
 	jsonSchemaTransform,
-	type ZodTypeProvider
-} from "fastify-type-provider-zod"
+} from "fastify-type-provider-zod";
 import { fastifySwagger } from "@fastify/swagger";
-import { fastifyCors } from "@fastify/cors"
-import ScalarApiReference from "@scalar/fastify-api-reference"
+import { fastifyCors } from "@fastify/cors";
+import ScalarApiReference from "@scalar/fastify-api-reference";
 
 const app = fastify();
 
@@ -16,9 +15,9 @@ app.setSerializerCompiler(serializerCompiler);
 
 app.register(fastifyCors, {
 	origin: true,
-	methods: ['GET', 'POST', 'PUT', 'DELETE'],
-	credentials: true
-})
+	methods: ["GET", "POST", "PUT", "DELETE"],
+	credentials: true,
+});
 
 app.register(fastifySwagger, {
 	openapi: {
@@ -26,14 +25,14 @@ app.register(fastifySwagger, {
 			title: "To-do list with kanban API",
 			description: "List, board and manager tasks",
 			version: "1.0.0",
-		}
+		},
 	},
-	transform: jsonSchemaTransform
-})
+	transform: jsonSchemaTransform,
+});
 
 app.register(ScalarApiReference, {
-	routePrefix: "/docs"
-})
+	routePrefix: "/docs",
+});
 
 app.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
 	console.log("HTTP Server Running");

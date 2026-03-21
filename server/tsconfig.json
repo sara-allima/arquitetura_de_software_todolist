@@ -12,13 +12,14 @@
     "skipLibCheck": true,
     "moduleResolution": "node16",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "../",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     
     "paths": {
-      "@/*":["./src/*"]
+      "@/*":["./src/*"],
+      "@kanban/types": ["../packages/types/src/index.ts"]
     }
   }
 }
