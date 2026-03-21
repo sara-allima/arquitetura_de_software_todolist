@@ -78,7 +78,8 @@ App com Next.js.
 
 | Script | Descrição |
 |---|---|
-| `npm run dev:web` | Inicia o frontend em modo desenvolvimento |
-| `npm run build:web` | Gera o build de produção |
+| `npm run dev:client` | Inicia o frontend em modo desenvolvimento |
+| `npm run build:client` | Gera o build de produção |
+| `npm run start:client` | Inicia o frontend |
 
 ---
