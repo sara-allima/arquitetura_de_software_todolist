@@ -1,12 +1,12 @@
+import { fastifyCors } from "@fastify/cors";
+import { fastifySwagger } from "@fastify/swagger";
+import ScalarApiReference from "@scalar/fastify-api-reference";
 import { fastify } from "fastify";
 import {
+	jsonSchemaTransform,
 	serializerCompiler,
 	validatorCompiler,
-	jsonSchemaTransform,
 } from "fastify-type-provider-zod";
-import { fastifySwagger } from "@fastify/swagger";
-import { fastifyCors } from "@fastify/cors";
-import ScalarApiReference from "@scalar/fastify-api-reference";
 
 const app = fastify();
 
