@@ -1,38 +1,4 @@
-import { fastifyCors } from "@fastify/cors";
-import { fastifySwagger } from "@fastify/swagger";
-import ScalarApiReference from "@scalar/fastify-api-reference";
-import { fastify } from "fastify";
-import {
-	jsonSchemaTransform,
-	serializerCompiler,
-	validatorCompiler,
-} from "fastify-type-provider-zod";
-
-const app = fastify();
-
-app.setValidatorCompiler(validatorCompiler);
-app.setSerializerCompiler(serializerCompiler);
-
-app.register(fastifyCors, {
-	origin: true,
-	methods: ["GET", "POST", "PUT", "DELETE"],
-	credentials: true,
-});
-
-app.register(fastifySwagger, {
-	openapi: {
-		info: {
-			title: "To-do list with kanban API",
-			description: "List, board and manager tasks",
-			version: "1.0.0",
-		},
-	},
-	transform: jsonSchemaTransform,
-});
-
-app.register(ScalarApiReference, {
-	routePrefix: "/docs",
-});
+import { app } from "@/app";
 
 app.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
 	console.log("HTTP Server Running");
