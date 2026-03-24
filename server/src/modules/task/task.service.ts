@@ -2,17 +2,19 @@ import type { CreateTaskInput, UpdateTaskInput } from "@kanban/types";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { tasks } from "@/db/schema";
+import { toTaskDTO } from "@/modules/task/task.mapper";
 import { NotFoundError } from "@/shared/error";
 
 export const TaskService = {
 	async create(data: CreateTaskInput) {
 		const [task] = await db.insert(tasks).values(data).returning();
 
-		return task;
+		return toTaskDTO(task);
 	},
 
 	async findAll() {
-		return db.select().from(tasks);
+		const taskList = await db.select().from(tasks);
+		return taskList.map(toTaskDTO);
 	},
 
 	async detail(id: number) {
@@ -22,7 +24,7 @@ export const TaskService = {
 			throw new NotFoundError("Task");
 		}
 
-		return task;
+		return toTaskDTO(task);
 	},
 
 	async update(id: number, data: UpdateTaskInput) {
@@ -36,7 +38,7 @@ export const TaskService = {
 			throw new NotFoundError("Task");
 		}
 
-		return task;
+		return toTaskDTO(task);
 	},
 
 	async delete(id: number) {
