@@ -10,7 +10,7 @@ Monorepo com backend em Fastify + TypeScript e frontend em Next.js, usando npm w
 ├── packages/
 │   └── types/            → @kanban/types (tipos compartilhados)
 ├── server/               → API com Fastify + TypeScript
-└── frontend/             → App com Next.js
+└── client/             → App com Next.js
 ```
 
 ---
@@ -51,14 +51,6 @@ API REST com Fastify + TypeScript + Zod.
 | `npm run dev:server` | Inicia o servidor em modo watch com `tsx` |
 | `npm run build:server` | Compila o TypeScript para `dist/` |
 | `npm run start:server` | Inicia o servidor compilado |
-
-#### Scripts (dentro de `server/`)
-
-| Script | Descrição |
-|---|---|
-| `npm run dev` | Inicia o servidor em modo watch com `tsx` |
-| `npm run build` | Compila o TypeScript para `dist/` |
-| `npm run start` | Inicia o servidor compilado |
 
 #### Variáveis de ambiente
 
