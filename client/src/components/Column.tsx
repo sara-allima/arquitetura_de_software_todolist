@@ -18,4 +18,4 @@ export default function Column({ id, title, tasks, onDelete, onEdit }) {
       ))}
     </div>
   );
-}
+}   

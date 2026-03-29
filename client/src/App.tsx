@@ -1,16 +1,5 @@
-import { useState } from 'react'
-import Header from './components/Header.tsx'
-import Column from './components/Column.tsx'
-import Kanban from './pages/Kanban.tsx'
-import './App.css'
+import Kanban from "./pages/Kanban";
 
-function App() {
-
-  return (
-    <>
-      <Kanban />
-    </>
-  )
+export default function App() {
+  return <Kanban />;
 }
-
-export default App

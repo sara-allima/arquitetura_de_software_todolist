@@ -21,12 +21,11 @@ export default function TaskCard({ task, onDelete, onEdit }) {
           <p className="text-gray-300 text-sm">{task.description}</p>
         </div>
 
-        <div className="flex gap-2 text-red-400 cursor-pointer">
-          <button onClick={() => onEdit(task)} className="cursor-pointer">✏️</button>
-          <button onClick={() => onDelete(task.id)} className="cursor-pointer" >🗑</button>
+        <div className="flex gap-2">
+          <button onClick={() => onEdit(task)} className="text-yellow-400">✏️</button>
+          <button onClick={() => onDelete(task.id)} className="text-red-400">🗑</button>
         </div>
       </div>
-
     </div>
   );
 }
