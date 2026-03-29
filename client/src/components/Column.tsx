@@ -1,7 +1,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import TaskCard from "./TaskCard";
 
-export default function Column({ id, title, tasks }) {
+export default function Column({ id, title, tasks, onDelete, onEdit }) {
   const { setNodeRef } = useDroppable({ id });
 
   return (
@@ -14,7 +14,7 @@ export default function Column({ id, title, tasks }) {
       </div>
 
       {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} />
+        <TaskCard key={task.id} task={task} onDelete={onDelete} onEdit={onEdit} />
       ))}
     </div>
   );
