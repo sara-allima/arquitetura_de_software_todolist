@@ -6,9 +6,7 @@ export default function Header({ onAdd }) {
         <p className="text-gray-400">Organize suas tarefas com o sistema Kanban!</p>
       </div>
 
-      <button type="button"
-        onClick={onAdd}
-        className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg cursor-pointer">
+      <button onClick={onAdd} className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg">
         + Adicionar Tarefa
       </button>
     </div>
