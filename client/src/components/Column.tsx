@@ -1,7 +1,16 @@
 import { useDroppable } from "@dnd-kit/core";
+import type { TaskDTO, TaskStatus } from "@kanban/types";
 import TaskCard from "./TaskCard";
 
-export default function Column({ id, title, tasks, onDelete, onEdit }) {
+type ColumnProps = {
+  id: TaskStatus;
+  title: string;
+  tasks: TaskDTO[];
+  onDelete: (taskId: number) => void;
+  onEdit: (task: TaskDTO) => void;
+};
+
+export default function Column({ id, title, tasks, onDelete, onEdit }: ColumnProps) {
   const { setNodeRef } = useDroppable({ id });
 
   return (
@@ -14,7 +23,7 @@ export default function Column({ id, title, tasks, onDelete, onEdit }) {
       </div>
 
       {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} onDelete={onDelete} onEdit={onEdit} />
+        <TaskCard key={task.id} task={task} onDelete={() => onDelete(task.id)} onEdit={() => onEdit(task)} />
       ))}
     </div>
   );

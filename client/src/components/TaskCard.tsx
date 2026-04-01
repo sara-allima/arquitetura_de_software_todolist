@@ -1,6 +1,13 @@
 import { useDraggable } from "@dnd-kit/core";
+import type { TaskDTO } from "@kanban/types";
 
-export default function TaskCard({ task, onDelete, onEdit }) {
+type TaskCardProps = {
+  task: TaskDTO;
+  onDelete: (taskId: number) => void;
+  onEdit: (task: TaskDTO) => void;
+};
+
+export default function TaskCard({ task, onDelete, onEdit }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: task.id });
 
   const style = transform
@@ -22,8 +29,8 @@ export default function TaskCard({ task, onDelete, onEdit }) {
         </div>
 
         <div className="flex gap-2">
-          <button onClick={() => onEdit(task)} className="text-yellow-400">✏️</button>
-          <button onClick={() => onDelete(task.id)} className="text-red-400">🗑</button>
+        <button type="button" onClick={(e) => { e.stopPropagation(); onEdit(task); }}>✏️</button>
+        <button type="button" onClick={(e) => { e.stopPropagation(); onDelete(task.id); }}>🗑</button>
         </div>
       </div>
     </div>

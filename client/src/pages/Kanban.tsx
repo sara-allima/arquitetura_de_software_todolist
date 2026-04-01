@@ -1,16 +1,50 @@
 import Header from "../components/Header";
 import Column from "../components/Column";
 import AddTaskModal from "../components/AddTaskModal";
-import { initialTasks } from "../simulate_data/tasks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  createTask,
+  deleteTask as deleteTaskService,
+  updateTask as updateTaskService,
+  getTasks,
+  groupByStatus,
+  type TasksByColumn} from '../services/tasks'
 import { DndContext } from "@dnd-kit/core";
+import type { CreateTaskInput, TaskDTO, UpdateTaskInput } from "@kanban/types";
 
 export default function Kanban() {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState<TasksByColumn>({
+    todo: [],
+    doing: [],
+    done: [],
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState(null);
+  const [editingTask, setEditingTask] = useState<TaskDTO | null>(null);
 
-  function handleDragEnd(event) {
+  useEffect(() => {
+    async function fetchTasks() {
+      try {
+        setLoading(true);
+        const data = await getTasks();
+        setTasks(groupByStatus(data));
+      } catch (err) {
+        setError("Erro ao carregar as tarefas.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTasks();
+  }, []);
+
+  if (loading) return <p>Carregando...</p>;
+  if (error) return <p>{error}</p>;
+
+
+  async function handleDragEnd(event) {
     const { active, over } = event;
     if (!over) return;
 
@@ -32,42 +66,61 @@ export default function Kanban() {
       [sourceCol]: prev[sourceCol].filter((t) => t.id !== active.id),
       [destCol]: [...prev[destCol], movedTask],
     }));
+
+    const taskToUpdate: UpdateTaskInput = {
+      status: destCol,
+    };
+  
+    try {
+      await updateTaskService(movedTask.id, taskToUpdate);
+    } catch {
+      setTasks((prev) => ({
+        ...prev,
+        [destCol]: prev[destCol].filter((t) => t.id !== active.id),
+        [sourceCol]: [...prev[sourceCol], movedTask],
+      }));
+    }
   }
 
-  function addTask(task) {
-    const newTask = { ...task, id: Date.now().toString() };
-
-    setTasks((prev) => ({
-      ...prev,
-      todo: [...prev.todo, newTask],
-    }));
+  async function addTask(task: TaskDTO) {
+    const taskToPersist: CreateTaskInput = {
+      title: task.title,
+      description: task.description || undefined,
+    };
+  
+    await createTask(taskToPersist);
+  
+    const updatedTasks = await getTasks();
+  
+    setTasks(groupByStatus(updatedTasks));
   }
 
-  function deleteTask(taskId) {
-    setTasks((prev) => {
-      const newState = {};
-      for (const col in prev) {
-        newState[col] = prev[col].filter((t) => t.id !== taskId);
-      }
-      return newState;
-    });
+  async function deleteTask(taskId: number) {
+
+    await deleteTaskService(taskId);
+
+    const updatedTasks = await getTasks();
+  
+    setTasks(groupByStatus(updatedTasks));
   }
 
-  function openEdit(task) {
+  function openEdit(task: TaskDTO) {
     setEditingTask(task);
     setIsModalOpen(true);
   }
 
-  function updateTask(updatedData) {
-    setTasks((prev) => {
-      const newState = {};
-      for (const col in prev) {
-        newState[col] = prev[col].map((t) =>
-          t.id === editingTask.id ? { ...t, ...updatedData } : t
-        );
-      }
-      return newState;
-    });
+  async function updateTask(updatedData: TaskDTO) {
+
+    const taskToUpdate: UpdateTaskInput = {
+      title: updatedData.title,
+      description: updatedData.description || undefined,
+    };
+  
+    await updateTaskService(updatedData.id, taskToUpdate);
+  
+    const updatedTasks = await getTasks();
+  
+    setTasks(groupByStatus(updatedTasks));
 
     setEditingTask(null);
   }
