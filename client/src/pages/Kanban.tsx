@@ -6,11 +6,9 @@ import {
   createTask,
   deleteTask as deleteTaskService,
   updateTask as updateTaskService,
-  getTasks,
-  groupByStatus,
-  type TasksByColumn} from '../services/tasks'
+  getTasks} from '../services/tasks'
 import { DndContext } from "@dnd-kit/core";
-import type { CreateTaskInput, TaskDTO, UpdateTaskInput } from "@kanban/types";
+import type { CreateTaskInput, TaskDTO, TasksByColumn, UpdateTaskInput } from "@kanban/types";
 
 export default function Kanban() {
   const [tasks, setTasks] = useState<TasksByColumn>({
@@ -28,7 +26,7 @@ export default function Kanban() {
       try {
         setLoading(true);
         const data = await getTasks();
-        setTasks(groupByStatus(data));
+        setTasks(data);
       } catch (err) {
         setError("Erro ao carregar as tarefas.");
         console.error(err);
@@ -92,7 +90,7 @@ export default function Kanban() {
   
     const updatedTasks = await getTasks();
   
-    setTasks(groupByStatus(updatedTasks));
+    setTasks(updatedTasks);
   }
 
   async function deleteTask(taskId: number) {
@@ -101,7 +99,7 @@ export default function Kanban() {
 
     const updatedTasks = await getTasks();
   
-    setTasks(groupByStatus(updatedTasks));
+    setTasks(updatedTasks);
   }
 
   function openEdit(task: TaskDTO) {
@@ -110,17 +108,17 @@ export default function Kanban() {
   }
 
   async function updateTask(updatedData: TaskDTO) {
-
     const taskToUpdate: UpdateTaskInput = {
       title: updatedData.title,
       description: updatedData.description || undefined,
+      status: updatedData.status,
     };
   
     await updateTaskService(updatedData.id, taskToUpdate);
   
     const updatedTasks = await getTasks();
   
-    setTasks(groupByStatus(updatedTasks));
+    setTasks(updatedTasks);
 
     setEditingTask(null);
   }

@@ -1,13 +1,21 @@
-import { useState, useEffect } from "react";
+import type { TaskDTO } from "@kanban/types";
+import { useState, useEffect} from "react";
 
-export default function AddTaskModal({ isOpen, onClose, onSubmit, initialData }) {
+type AddTaskModalProps = {
+  initialData?: TaskDTO | null;
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (task: TaskDTO) => void;
+};
+
+export default function AddTaskModal({ isOpen, onClose, onSubmit, initialData }: AddTaskModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   useEffect(() => {
     if (initialData) {
       setTitle(initialData.title);
-      setDescription(initialData.description);
+      setDescription(initialData.description ? initialData.description : "");
     } else {
       setTitle("");
       setDescription("");
@@ -18,7 +26,11 @@ export default function AddTaskModal({ isOpen, onClose, onSubmit, initialData })
 
   function handleSubmit(e) {
     e.preventDefault();
-    onSubmit({ title, description });
+    if (initialData) {
+      onSubmit({ ...initialData, title, description });
+    } else {
+      onSubmit({ title, description } as TaskDTO);
+    }
     onClose();
   }
 
@@ -28,6 +40,10 @@ export default function AddTaskModal({ isOpen, onClose, onSubmit, initialData })
         <h2 className="text-white text-lg mb-4">
           {initialData ? "Editar Tarefa" : "Adicionar Tarefa"}
         </h2>
+
+        {initialData ? <input type="hidden" name="id" value={initialData.id} /> : null}
+
+        {initialData ? <input type="hidden" name="status" value={initialData.status} /> : null}
 
         <input
           value={title}

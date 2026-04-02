@@ -28,3 +28,5 @@ export type TaskDTO = {
 	createdAt: Date;
 	updatedAt: Date;
 };
+
+export type TasksByColumn = Record<TaskStatus, TaskDTO[]>;

@@ -2,14 +2,14 @@ import type {
 	CreateTaskInput,
 	TaskDTO,
 	TaskStatus,
+	TasksByColumn,
 	UpdateTaskInput,
 } from "@kanban/types";
 import { api } from "./api";
 
-export async function getTasks(): Promise<TaskDTO[]> {
+export async function getTasks(): Promise<TasksByColumn> {
 	const response = await api.get("/tasks");
-	console.log(response.data);
-	return response.data;
+	return groupByStatus(response.data);
 }
 
 export async function createTask(data: CreateTaskInput): Promise<TaskDTO> {
@@ -28,8 +28,6 @@ export async function updateTask(
 export async function deleteTask(id: number): Promise<void> {
 	await api.delete(`/tasks/${id}`);
 }
-
-export type TasksByColumn = Record<TaskStatus, TaskDTO[]>;
 
 export function groupByStatus(tasks: TaskDTO[]): TasksByColumn {
 	return tasks.reduce<TasksByColumn>(
