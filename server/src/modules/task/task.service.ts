@@ -9,6 +9,8 @@ export const TaskService = {
 	async create(data: CreateTaskInput) {
 		const [task] = await db.insert(tasks).values(data).returning();
 
+		
+
 		return toTaskDTO(task);
 	},
 
