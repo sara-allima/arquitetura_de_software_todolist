@@ -4,10 +4,27 @@ import { db } from "@/db";
 import { tasks } from "@/db/schema";
 import { toTaskDTO } from "@/modules/task/task.mapper";
 import { NotFoundError } from "@/shared/error";
+import { EMAIL_SUBJECTS, EMAIL_CONTENT } from "@kanban/types";
+import { notificationClient } from "@/clients/grpc-notification.client";
+import { any, email } from "zod";
+import { env } from "@/env";
+import { title } from "node:process";
+
 
 export const TaskService = {
 	async create(data: CreateTaskInput) {
 		const [task] = await db.insert(tasks).values(data).returning();
+
+		notificationClient.sendNotification(
+			{
+				email: env.CUSTOMER_EMAIL,
+				title: EMAIL_SUBJECTS.TASK_CREATED_SUBJECT,
+				message: EMAIL_CONTENT.TASK_CREATED_CONTENT
+			},
+			(err: any) => {
+				if(err) console.error("Erro ao enviar notificação", err);
+			}
+		);
 
 		return toTaskDTO(task);
 	},
@@ -38,6 +55,17 @@ export const TaskService = {
 			throw new NotFoundError("Task");
 		}
 
+		notificationClient.sendNotification(
+			{
+				email: env.CUSTOMER_EMAIL,
+				title: EMAIL_SUBJECTS.TASK_UPDATED_SUBJECT,
+				message: EMAIL_CONTENT.TASK_UPDATED_CONTENT
+			},
+			(err: any) => {
+				if(err) console.error("Erro ao enviar notificação", err);
+			}
+		)
+
 		return toTaskDTO(task);
 	},
 
@@ -47,5 +75,13 @@ export const TaskService = {
 		if (!task) {
 			throw new NotFoundError("Task");
 		}
+
+		notificationClient.sendNotification(
+			{
+				email: env.CUSTOMER_EMAIL,
+				title: EMAIL_SUBJECTS.TASK_DELETED_SUBJECT,
+				message: EMAIL_CONTENT.TASK_DELETED_CONTENT
+			}
+		)
 	},
 };

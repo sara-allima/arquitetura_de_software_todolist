@@ -1,4 +1,5 @@
 import { z } from "zod";
+export { EMAIL_SUBJECTS, EMAIL_CONTENT } from "./emailEnum.js" //Verificar pq aqui tá js mas o arquivo é ts
 
 export const TASK_STATUS = ["todo", "doing", "done"] as const;
 export type TaskStatus = (typeof TASK_STATUS)[number];
