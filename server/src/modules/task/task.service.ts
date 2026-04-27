@@ -1,15 +1,12 @@
 import type { CreateTaskInput, UpdateTaskInput } from "@kanban/types";
+import { EMAIL_CONTENT, EMAIL_SUBJECTS } from "@kanban/types";
 import { eq } from "drizzle-orm";
+import { notificationClient } from "@/clients/grpc-notification.client";
 import { db } from "@/db";
 import { tasks } from "@/db/schema";
+import { env } from "@/env";
 import { toTaskDTO } from "@/modules/task/task.mapper";
 import { NotFoundError } from "@/shared/error";
-import { EMAIL_SUBJECTS, EMAIL_CONTENT } from "@kanban/types";
-import { notificationClient } from "@/clients/grpc-notification.client";
-import { any, email } from "zod";
-import { env } from "@/env";
-import { title } from "node:process";
-
 
 export const TaskService = {
 	async create(data: CreateTaskInput) {
@@ -19,11 +16,11 @@ export const TaskService = {
 			{
 				email: env.CUSTOMER_EMAIL,
 				title: EMAIL_SUBJECTS.TASK_CREATED_SUBJECT,
-				message: EMAIL_CONTENT.TASK_CREATED_CONTENT
+				message: EMAIL_CONTENT.TASK_CREATED_CONTENT,
 			},
 			(err: any) => {
-				if(err) console.error("Erro ao enviar notificação", err);
-			}
+				if (err) console.error("Erro ao enviar notificação", err);
+			},
 		);
 
 		return toTaskDTO(task);
@@ -59,12 +56,12 @@ export const TaskService = {
 			{
 				email: env.CUSTOMER_EMAIL,
 				title: EMAIL_SUBJECTS.TASK_UPDATED_SUBJECT,
-				message: EMAIL_CONTENT.TASK_UPDATED_CONTENT
+				message: EMAIL_CONTENT.TASK_UPDATED_CONTENT,
 			},
 			(err: any) => {
-				if(err) console.error("Erro ao enviar notificação", err);
-			}
-		)
+				if (err) console.error("Erro ao enviar notificação", err);
+			},
+		);
 
 		return toTaskDTO(task);
 	},
@@ -80,8 +77,11 @@ export const TaskService = {
 			{
 				email: env.CUSTOMER_EMAIL,
 				title: EMAIL_SUBJECTS.TASK_DELETED_SUBJECT,
-				message: EMAIL_CONTENT.TASK_DELETED_CONTENT
-			}
-		)
+				message: EMAIL_CONTENT.TASK_DELETED_CONTENT,
+			},
+			(err: any) => {
+				if (err) console.error("Erro ao enviar notificação", err);
+			},
+		);
 	},
 };
