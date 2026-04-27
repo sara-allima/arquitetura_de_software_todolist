@@ -15,16 +15,17 @@ const notificationPackage = grpcObject;
 export function startGrpcServer() {
 	const server = new grpc.Server();
 
-	server.addService(
-		notificationPackage.NotificationService.service,
+	server.addService(notificationPackage.NotificationService.service, {
 		sendNotification,
-	);
+	});
 
 	server.bindAsync(
 		`0.0.0.0:${env.PORT}`,
 		grpc.ServerCredentials.createInsecure(),
 		async () => {
-			console.log(`🚀 gRPC server running on port ${env.PORT}`);
+			console.log(
+				`🚀 gRPC server running on port ${env.PORT}, mailhog interface running on port 8025`,
+			);
 
 			await transporter.sendMail({
 				from: "test@kanban.com",
